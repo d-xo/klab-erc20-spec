@@ -5,10 +5,9 @@
     "rules": ["src/lemmas.k.md"]
   },
   "implementations": {
-    "Dapp": {
-      "solc_output": "dapp/out/Dapp.sol.json"
+    "ERC20": {
+      "solc_output": "dapp/out/erc20.sol.json"
     }
   },
-  "dapp_root": "dapp",
-  "host": "127.0.0.1:8080"
+  "dapp_root": "dapp"
 }
