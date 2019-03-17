@@ -1,0 +1,6 @@
+[submodule "dapp"]
+	path = dapp
+	url = git@github.com:xwvvvvwx/klab-erc20-dapp.git
+[submodule "klab-erc20-dapp"]
+	path = dapp
+	url = git@github.com:xwvvvvwx/klab-erc20-dapp.git
