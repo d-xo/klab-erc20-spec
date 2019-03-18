@@ -14,5 +14,5 @@ iff
 
     VCallValue == 0
 
-returns True
+returns 1
 ```
