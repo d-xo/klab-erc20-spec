@@ -23,7 +23,11 @@ returns 1
 define behaviour for the following cases:
 
 - `src =/= dst`:
-  - `src =/= msg.sender` or `allowance[src][msg.sender] == uint(-1)` (no checks on allowance)
+  - `src == msg.sender` or `allowance[src][msg.sender] == uint(-1)` (no checks on allowance)
+  - `src =/= msg.sender` and `allowance[src][msg.sender] =/= uint(-1)`
+
+- `src == dst`:
+  - `src == msg.sender` or `allowance[src][msg.sender] == uint(-1)` (no checks on allowance)
   - `src =/= msg.sender` and `allowance[src][msg.sender] =/= uint(-1)`
 
 ### `src =/= dst`
@@ -54,9 +58,9 @@ iff in range uint256
 
 iff
 
-    ((Src == CALLER_ID) orBool (Allowance == maxUInt256))
-    SrcBal     >= Wad
+    SrcBal >= Wad
     VCallValue == 0
+    ((Src == CALLER_ID) orBool (Allowance == maxUInt256))
 
 if
 
@@ -102,6 +106,71 @@ iff in range uint256
 if
 
     Src =/= Dst
+
+returns 1
+```
+
+### `src == dst`
+
+First we define the case where `src == msg.sender` or `allowance[src][msg.sender] == uint(-1)`:
+
+```
+behaviour transferFrom of ERC20
+interface transferFrom(address Src, address Dst, uint Wad)
+
+types
+
+    Wad:       uint256
+    SrcBal:    uint256
+    Allowance: uint256
+
+storage
+
+    #ERC20.balanceOf[Src] |-> SrcBal
+    #ERC20.allowance[Src][CALLER_ID] |-> Allowance
+
+iff
+
+    SrcBal >= Wad
+    VCallValue == 0
+    ((Src == CALLER_ID) orBool (Allowance == maxUInt256))
+
+if
+
+    Src == Dst
+
+returns 1
+```
+
+Finally we define the case where `src =/= msg.sender` and `allowance[src][msg.sender] =/= uint(-1)`:
+
+```
+behaviour transferFrom of ERC20
+interface transferFrom(address Src, address Dst, uint Wad)
+
+types
+
+    Wad:       uint256
+    SrcBal:    uint256
+    Allowance: uint256
+
+storage
+
+    #ERC20.balanceOf[Src]            |-> SrcBal
+    #ERC20.allowance[Src][CALLER_ID] |-> Allowance => Allowance - Wad
+
+iff
+
+    Src        =/= CALLER_ID
+    Allowance  =/= maxUInt256
+
+    SrcBal     >= Wad
+    Allowance  >= Wad
+    VCallValue == 0
+
+if
+
+    Src == Dst
 
 returns 1
 ```
